@@ -60,6 +60,7 @@ extension MainGameView {
         @Published var fedBabyOnce: Bool = false
         
         @Published var hasShownPredatorInstruction: Bool = false
+        @Published var hungerPlayed: Bool = false
         @Published var shownInstructionTypes: Set<InstructionType> = []
 
         // SwiftData context & model
