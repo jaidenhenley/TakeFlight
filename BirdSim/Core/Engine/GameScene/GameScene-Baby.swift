@@ -16,7 +16,16 @@ extension GameScene {
             
             // Increment the specific fed count for this nest
             let currentFed = (data["fedCount"] as? Int) ?? 0
-            data["fedCount"] = currentFed + 1
+            let newFedCount = currentFed + 1
+            data["fedCount"] = newFedCount
+            
+//            Task {
+//                let percentComplete = Double(newFedCount * 10)
+//                await GameKitManager.shared.reportProgress(
+//                    id: GameKitManager.AchievementID.feedBabyTenTimes,
+//                    percent: percentComplete
+//                )
+//            }
         }
     }
     func babyBirdNode() -> SKSpriteNode? {
@@ -45,6 +54,7 @@ extension GameScene {
                 self?.viewModel?.activeNestNode = nil
                 self?.currentActiveNest = nil
                 self?.viewModel?.clearNestAndBabyState()
+    
             }
         }
     }

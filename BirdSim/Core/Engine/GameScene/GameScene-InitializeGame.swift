@@ -224,6 +224,7 @@ extension GameScene {
         // Start background music if it isn't already playing
         SoundManager.shared.startBackgroundMusic(track: .mainMap)
         installKeyboardMapHandler()
+        resetAchievementsForTesting()
         
         self.physicsWorld.contactDelegate = self
         // Setup camera first

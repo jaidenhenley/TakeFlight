@@ -8,6 +8,8 @@
 import Foundation
 import GameController
 import SpriteKit
+import GameKit
+
 
 // MARK: - GameScene
 // Main SpriteKit scene for the overworld.
@@ -117,6 +119,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // Joystick deadzone used for movement + walk animation gating
     let joystickDeadzone: CGFloat = 0.15
+    
+
+    func resetAchievementsForTesting() {
+        GKAchievement.resetAchievements { error in
+            if error == nil {
+                print("Achievements have been reset")
+                // Clear any locally saved achievement progress if necessary
+                // e.g., UserDefaults.standard.removeObject(forKey: "YourLocalProgressKey")
+            } else {
+                print("Error resetting achievements: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }
+    }
     
 } // End of GameScene Class
 

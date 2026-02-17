@@ -142,6 +142,18 @@ extension MainGameView {
         var pendingMiniGameStarter: (() -> Void)? = nil
         var pendingMiniGameCanceler: (() -> Void)? = nil
         weak var currentMiniGameScene: SKScene?
+        
+        
+        // Achievement Variables
+        
+       @Published var buildANestAC: Bool = false
+       @Published var mateWithMaleAC: Bool = false
+       @Published var raiseOneBirdAC: Bool = false
+       @Published var predatorDefeatCount: Int = 0
+       @Published var feedCount: Int = 0
+       @Published var gameTime: Int = 0
+       @Published var escapedBelleIsle: Bool = false
+        
 
         // Present instructions while the mini-game scene is already on screen.
         // 'startAction' should unpause/start gameplay; 'cancelAction' should return to the main world.

@@ -11,7 +11,7 @@ import SwiftData
 
 struct MainMenuView: View {
     enum MenuField: Hashable, CaseIterable {
-        case resume, start, instructions, settings
+        case resume, start, instructions, settings, gameCenter
     }
     
     @State private var selectedIndex: Int = 0
@@ -21,12 +21,19 @@ struct MainMenuView: View {
     @AppStorage("showingInstructions") var showingInstructions = true
 
     let container: ModelContainer
+    let presentingViewController: UIViewController?
     let onStartNewGame: () -> Void
     let onResumeGame: () -> Void
     @StateObject private var viewModel: MainGameView.ViewModel
 
-    init(container: ModelContainer, onStartNewGame: @escaping () -> Void, onResumeGame: @escaping () -> Void) {
+    init(
+        container: ModelContainer,
+        presentingViewController: UIViewController?,
+        onStartNewGame: @escaping () -> Void,
+        onResumeGame: @escaping () -> Void
+    ) {
         self.container = container
+        self.presentingViewController = presentingViewController
         self.onStartNewGame = onStartNewGame
         self.onResumeGame = onResumeGame
         _viewModel = StateObject(wrappedValue: MainGameView.ViewModel(context: container.mainContext))
@@ -113,6 +120,7 @@ struct MainMenuView: View {
         case .start: return "Start New Game"
         case .instructions: return "Instructions"
         case .settings: return "Settings"
+        case .gameCenter: return "Game Center"
         }
     }
 
@@ -134,6 +142,11 @@ struct MainMenuView: View {
         case .start: onStartNewGame()
         case .instructions: showingInstructions.toggle()
         case .settings: showingSettings.toggle()
+        case .gameCenter:
+            Task { @MainActor in
+                guard let presentingViewController else { return }
+                GameKitManager.shared.showAchievementsUI(from: presentingViewController)
+            }
         }
     }
 

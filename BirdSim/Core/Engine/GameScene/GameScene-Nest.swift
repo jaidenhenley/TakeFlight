@@ -54,6 +54,15 @@ extension GameScene {
     }
     
     func spawnSuccessNest() {
+        
+        if viewModel?.buildANestAC == false {
+            Task {
+                await GameKitManager.shared.completeAchievement(
+                    id: GameKitManager.AchievementID.buildANest
+                )
+            }
+        }
+        
         let nestID = UUID().uuidString
         let nest = SKSpriteNode(imageNamed: "nest")
         
