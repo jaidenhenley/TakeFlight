@@ -160,6 +160,11 @@ class LeaveIslandScene: SKScene, SKPhysicsContactDelegate {
 
     func userHasWon() {
         guard !isGameOver else { return }
+        Task {
+            await GameKitManager.shared.completeAchievement(
+                id: GameKitManager.AchievementID.escapeBelleIsle
+            )
+    }
         isGameOver = true
         timerLabel.text = "ESCAPED!"
         timerLabel.fontColor = .systemGreen

@@ -55,12 +55,10 @@ extension GameScene {
     
     func spawnSuccessNest() {
         
-        if viewModel?.buildANestAC == false {
             Task {
                 await GameKitManager.shared.completeAchievement(
                     id: GameKitManager.AchievementID.buildANest
                 )
-            }
         }
         
         let nestID = UUID().uuidString
@@ -142,6 +140,12 @@ extension GameScene {
            let data = activeNest.userData,
            let fedCount = data["fedCount"] as? Int,
            fedCount >= 2 {
+            Task {
+                await GameKitManager.shared.completeAchievement(
+                    id: GameKitManager.AchievementID.raisedOneBaby
+                )
+        }
+            
             return activeNest
         }
         

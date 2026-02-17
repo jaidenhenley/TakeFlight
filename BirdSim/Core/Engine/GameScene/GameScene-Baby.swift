@@ -83,6 +83,12 @@ extension GameScene {
         body.categoryBitMask = PhysicsCategory.baby
         baby.physicsBody = body
         SoundManager.shared.playEffect(.hatchedBaby)
+        Task {
+            await GameKitManager.shared.completeAchievement(
+                id: GameKitManager.AchievementID.mateWithMaleBird
+            )
+    }
+        
         nest.addChild(baby)
         
         viewModel?.hasBaby = true
