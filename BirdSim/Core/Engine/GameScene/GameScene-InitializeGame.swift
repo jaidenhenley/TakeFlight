@@ -19,6 +19,10 @@ extension GameScene {
      
         
         if resetState {
+            
+            //debug
+            resetAchievementsForTesting()
+
             viewModel?.controlsAreVisable = true
             viewModel?.showGameWin = false
             viewModel?.savedCameraPosition = nil

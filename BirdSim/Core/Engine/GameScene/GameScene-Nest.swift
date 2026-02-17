@@ -54,6 +54,13 @@ extension GameScene {
     }
     
     func spawnSuccessNest() {
+        
+            Task {
+                await GameKitManager.shared.completeAchievement(
+                    id: GameKitManager.AchievementID.buildANest
+                )
+        }
+        
         let nestID = UUID().uuidString
         let nest = SKSpriteNode(imageNamed: "nest")
         
@@ -133,6 +140,12 @@ extension GameScene {
            let data = activeNest.userData,
            let fedCount = data["fedCount"] as? Int,
            fedCount >= 2 {
+            Task {
+                await GameKitManager.shared.completeAchievement(
+                    id: GameKitManager.AchievementID.raisedOneBaby
+                )
+        }
+            
             return activeNest
         }
         

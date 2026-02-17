@@ -23,7 +23,7 @@ struct MinigameOnboardingView: View {
             // 2. VISIBLE UI
             VStack(spacing: 24) {
                 VStack(spacing: 8) {
-                    Text("Instructions").font(.title).bold()
+                    Text("Minigame Instructions").font(.title).bold()
                     Divider().frame(width: 60)
                 }
                 

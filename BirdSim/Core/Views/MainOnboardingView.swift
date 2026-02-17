@@ -18,7 +18,7 @@ struct MainOnboardingView: View {
         VStack(spacing: 16) {
             // Header
             VStack(spacing: 8) {
-                Text("Instructions")
+                Text("Tutorial")
                     .font(.system(.title, design: .rounded))
                     .bold()
                 

@@ -6,6 +6,7 @@
 
 import SwiftUI
 import SwiftData
+import UIKit
 
 // MARK: - Root Navigation State
 /// Represents the two possible root screens in the app.
@@ -19,23 +20,46 @@ enum RootScreen {
 struct ContentRootView: View {
     let container: ModelContainer // Shared persistent data container
     @State private var rootScreen: RootScreen = .menu // Current navigation state
+    @State private var presentingViewController: UIViewController?
 
     var body: some View {
-        switch rootScreen {
-        case .menu:
-            // Main menu with callbacks to start or resume a game.
+        Group {
+            switch rootScreen {
+            case .menu:
+                // Main menu with callbacks to start or resume a game.
             MainMenuView(
                 container: container,
+                presentingViewController: presentingViewController,
                 onStartNewGame: { rootScreen = .game(newGame: true) },
                 onResumeGame: { rootScreen = .game(newGame: false) }
             )
-        case .game(let isNew):
-            // Game view. Returns to menu on exit.
-            MainGameView(
-                container: container,
-                newGame: isNew,
-                onExit: { rootScreen = .menu }
-            )
+            case .game(let isNew):
+                // Game view. Returns to menu on exit.
+                MainGameView(
+                    container: container,
+                    newGame: isNew,
+                    onExit: { rootScreen = .menu }
+                )
+            }
+        }
+        .background(PresentingViewControllerReader { presentingViewController = $0 })
+        .task(id: presentingViewController) {
+            guard let presentingViewController else { return }
+            await GameKitManager.shared.authenticateLocalPlayer(presentingViewController: presentingViewController)
         }
     }
+}
+
+private struct PresentingViewControllerReader: UIViewControllerRepresentable {
+    let onResolve: (UIViewController) -> Void
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = UIViewController()
+        DispatchQueue.main.async {
+            onResolve(controller)
+        }
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
