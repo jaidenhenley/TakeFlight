@@ -366,7 +366,15 @@ extension GameScene {
     }
     
     private func isNearLeaveIsland(player: SKNode) -> Bool {
-        return isNearNode(named: leaveIslandMini, player: player, threshold: 220)
+        var isInside = false
+        enumerateChildNodes(withName: leaveIslandMini) { node, stop in
+            let frame = node.calculateAccumulatedFrame().insetBy(dx: -20, dy: -20)
+            if frame.contains(player.position) {
+                isInside = true
+                stop.pointee = true
+            }
+        }
+        return isInside
     }
 
     private func nearestBabyNest(from position: CGPoint, threshold: CGFloat) -> (SKNode, CGFloat)? {

@@ -292,7 +292,7 @@ extension GameScene {
         if self.childNode(withName: leaveIslandMini) != nil { return }
         let spot = SKSpriteNode(imageNamed: "bridge")
         spot.position = CGPoint(x: 3167, y: 1746)
-        spot.size = CGSize(width: 2400, height: 1600)
+        spot.size = CGSize(width: 2400, height: 300)
         spot.name = leaveIslandMini
         addChild(spot)
     }
