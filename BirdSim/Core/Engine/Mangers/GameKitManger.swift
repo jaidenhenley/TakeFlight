@@ -78,19 +78,20 @@ final class GameKitManager: NSObject, ObservableObject {
         }
     }
     
-    // Optional: show Game Center achievements UI.
-    @MainActor
-    func showAchievementsUI(from presentingViewController: UIViewController) {
+    // Optional: show Game Center UI.
+    func showGameCenterUI(from presentingViewController: UIViewController) {
         let topViewController = topMostViewController(from: presentingViewController)
         guard topViewController.viewIfLoaded?.window != nil else {
             print("Game Center UI not shown: presenter not in window hierarchy.")
             return
         }
         
-        let gcView = GKGameCenterViewController(state: .achievements)
+        let gcView = GKGameCenterViewController(state: .dashboard)
         gcView.gameCenterDelegate = self
         topViewController.present(gcView, animated: true)
     }
+    
+    
 }
 
 extension GameKitManager: GKGameCenterControllerDelegate {

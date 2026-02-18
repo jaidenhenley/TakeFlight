@@ -120,7 +120,7 @@ struct MainMenuView: View {
         case .start: return "Start New Game"
         case .instructions: return "Instructions"
         case .settings: return "Settings"
-        case .gameCenter: return "Achievements"
+        case .gameCenter: return "Game Center"
         }
     }
 
@@ -145,7 +145,7 @@ struct MainMenuView: View {
         case .gameCenter:
             Task { @MainActor in
                 guard let presentingViewController else { return }
-                GameKitManager.shared.showAchievementsUI(from: presentingViewController)
+                GameKitManager.shared.showGameCenterUI(from: presentingViewController)
             }
         }
     }

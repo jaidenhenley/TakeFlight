@@ -6,6 +6,7 @@
 //
 
 import Combine
+import GameKit
 import SwiftUI
 import SpriteKit
 import SwiftData
@@ -785,11 +786,19 @@ extension MainGameView {
         var hungerSegments: Int {
             return max(0, min(5, hunger))
         }
+        func submitScore(value: Int) {
+            if GKLocalPlayer.local.isAuthenticated {
+                GKLeaderboard.submitScore(value, context: 0, player: GKLocalPlayer.local, leaderboardIDs: ["birdScore.lb.classicmode"]) { error in
+                    if let error = error {
+                        print("Leaderboard submission error: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
         
     }
-    
-}
 
+}
 protocol GameDelegate {
     func dismissGame()
 }
