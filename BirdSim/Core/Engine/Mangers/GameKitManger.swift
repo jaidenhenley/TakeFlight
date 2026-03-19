@@ -13,6 +13,10 @@ final class GameKitManager: NSObject, ObservableObject {
     
     @Published private(set) var isAuthenticated = false
     
+    /// Achievements that have already been completed locally – prevents duplicate reports.
+    private var completedAchievements: Set<String> = []
+    private let completedKey = "completedAchievements"
+    
     // Replace these with the exact identifiers from App Store Connect.
     enum AchievementID {
         static let mateWithMaleBird = "mateWithMaleBird.ac.classicMode"
@@ -27,6 +31,10 @@ final class GameKitManager: NSObject, ObservableObject {
     
     private override init() {
         super.init()
+        // Restore previously completed achievements from disk
+        if let saved = UserDefaults.standard.stringArray(forKey: completedKey) {
+            completedAchievements = Set(saved)
+        }
     }
     
     // Call once at app start or main menu.
@@ -49,8 +57,10 @@ final class GameKitManager: NSObject, ObservableObject {
     }
     
     // Set an achievement to 100% immediately (one-shot).
+    // Skips the report if this achievement was already completed.
     func completeAchievement(id: String, showBanner: Bool = true) async {
         guard GKLocalPlayer.local.isAuthenticated else { return }
+        guard !completedAchievements.contains(id) else { return }
         
         let achievement = GKAchievement(identifier: id)
         achievement.percentComplete = 100
@@ -58,14 +68,17 @@ final class GameKitManager: NSObject, ObservableObject {
         
         do {
             try await GKAchievement.report([achievement])
+            markCompleted(id)
         } catch {
             print("Achievement report error: \(error.localizedDescription)")
         }
     }
     
     // Incremental progress (0...100). Example: 10% per event.
+    // Skips the report if this achievement was already completed.
     func reportProgress(id: String, percent: Double, showBanner: Bool = true) async {
         guard GKLocalPlayer.local.isAuthenticated else { return }
+        guard !completedAchievements.contains(id) else { return }
         
         do {
             let existing = try await GKAchievement.loadAchievements()
@@ -73,9 +86,24 @@ final class GameKitManager: NSObject, ObservableObject {
             achievement.percentComplete = min(100, max(achievement.percentComplete, percent))
             achievement.showsCompletionBanner = showBanner
             try await GKAchievement.report([achievement])
+            if achievement.percentComplete >= 100 {
+                markCompleted(id)
+            }
         } catch {
             print("Achievement progress error: \(error.localizedDescription)")
         }
+    }
+    
+    /// Persist a completed achievement locally so it is never reported again.
+    private func markCompleted(_ id: String) {
+        completedAchievements.insert(id)
+        UserDefaults.standard.set(Array(completedAchievements), forKey: completedKey)
+    }
+    
+    /// Call when the user resets all Game Center achievements (e.g. via a debug menu).
+    func resetLocalCompletionCache() {
+        completedAchievements.removeAll()
+        UserDefaults.standard.removeObject(forKey: completedKey)
     }
     
     // Optional: show Game Center UI.

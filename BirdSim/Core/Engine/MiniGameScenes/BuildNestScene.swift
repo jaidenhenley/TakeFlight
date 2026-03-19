@@ -118,7 +118,7 @@ class BuildNestScene: SKScene {
         if filledSlots == 4 {
             if viewModel?.tutorialIsOn == true {
                 viewModel?.showMainGameInstructions(type: .retryNest)
-                print("Nest GOod")
+                print("Nest Good")
             }
             viewModel?.userScore += 1
             viewModel?.startMatingPhase()

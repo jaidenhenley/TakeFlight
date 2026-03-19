@@ -53,8 +53,6 @@ final class GameState {
     // Stores Date().timeIntervalSince1970
     var babySpawnTimestamp: Double = 0
 
-
-
     init() {}
 }
 

@@ -205,24 +205,6 @@ extension MainGameView {
             mapIsVisable = true
         }
         
-        func delayedMainInstructions(type: InstructionType) {
-            let delayInSeconds = 5.0
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + delayInSeconds) {
-                self.showMainGameInstructions(type: type)
-            }
-            
-        }
-        
-        func moreDelayedMainInstructions(type: InstructionType) {
-            let delayInSeconds = 10.0
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + delayInSeconds) {
-                self.showMainGameInstructions(type: type)
-            }
-            
-        }
-        
         func showNextInstruction(type: InstructionType) {
             
             
@@ -808,6 +790,3 @@ extension MainGameView: GameDelegate {
         viewModel.gameStarted = false
     }
 }
-
-
-extension ImageResource: Equatable { }
