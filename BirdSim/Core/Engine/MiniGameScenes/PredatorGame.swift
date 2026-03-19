@@ -244,6 +244,7 @@ class PredatorGame: SKScene {
         lossLabel.fontSize = 40
         lossLabel.position = CGPoint(x: frame.midX, y: frame.midY - 150)
         lossLabel.zPosition = 200
+        viewModel?.submitScore(value: viewModel!.userScore) // Ensure score is submitted even on loss
         addChild(lossLabel)
         
         SoundManager.shared.playSoundEffect(named: "error_buzz")

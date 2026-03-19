@@ -6,6 +6,7 @@
 //
 
 import Combine
+import GameKit
 import SwiftUI
 import SpriteKit
 import SwiftData
@@ -202,24 +203,6 @@ extension MainGameView {
             }
             controlsAreVisable = true
             mapIsVisable = true
-        }
-        
-        func delayedMainInstructions(type: InstructionType) {
-            let delayInSeconds = 5.0
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + delayInSeconds) {
-                self.showMainGameInstructions(type: type)
-            }
-            
-        }
-        
-        func moreDelayedMainInstructions(type: InstructionType) {
-            let delayInSeconds = 10.0
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + delayInSeconds) {
-                self.showMainGameInstructions(type: type)
-            }
-            
         }
         
         func showNextInstruction(type: InstructionType) {
@@ -785,11 +768,19 @@ extension MainGameView {
         var hungerSegments: Int {
             return max(0, min(5, hunger))
         }
+        func submitScore(value: Int) {
+            if GKLocalPlayer.local.isAuthenticated {
+                GKLeaderboard.submitScore(value, context: 0, player: GKLocalPlayer.local, leaderboardIDs: ["birdScore.lb.classicmode"]) { error in
+                    if let error = error {
+                        print("Leaderboard submission error: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
         
     }
-    
-}
 
+}
 protocol GameDelegate {
     func dismissGame()
 }
@@ -799,6 +790,3 @@ extension MainGameView: GameDelegate {
         viewModel.gameStarted = false
     }
 }
-
-
-extension ImageResource: Equatable { }

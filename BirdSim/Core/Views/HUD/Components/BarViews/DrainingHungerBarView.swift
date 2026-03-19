@@ -50,12 +50,16 @@ struct DrainingHungerBarView: View {
             if currentHunger <= 0 {
                 viewModel.showGameOver = true
                 viewModel.currentDeathMessage = "You died from Hunger"
+                viewModel.submitScore(value: viewModel.userScore) // Ensure score is submitted even on loss
+
             }
         }
         .onChange(of: currentHunger) { _, newValue in
             if newValue <= 0 {
                 viewModel.showGameOver = true
                 viewModel.currentDeathMessage = "You died from Hunger"
+                viewModel.submitScore(value: viewModel.userScore) // Ensure score is submitted even on loss
+
 
             }
         }
