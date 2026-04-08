@@ -9,11 +9,11 @@ import SwiftUI
 
 struct VisualEffectBlur: UIViewRepresentable {
     var blurStyle: UIBlurEffect.Style
-
+    
     func makeUIView(context: Context) -> UIVisualEffectView {
         return UIVisualEffectView(effect: UIBlurEffect(style: blurStyle))
     }
-
+    
     func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
         uiView.effect = UIBlurEffect(style: blurStyle)
     }
@@ -23,79 +23,46 @@ struct InventoryView: View {
     @ObservedObject var viewModel: MainGameView.ViewModel
     var body: some View {
         if viewModel.controlsAreVisable {
+            let screen = UIScreen.main.bounds
+            let slotSize = screen.width * 0.045
+            let barHeight = screen.height * 0.08
             
             
-            ZStack {
+            HStack(spacing: screen.width * 0.008) {
+                Image(.inventoryWord)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: barHeight)
                 
-                HStack(spacing: 16) {
-                    Image(.inventoryWord)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 150)
-                    
+                Divider()
+                    .frame(height: barHeight * 0.6)
+                    .overlay(Color.white.opacity(0.3))
+                
+                ForEach(["leaf", "stick", "dandelion", "spiderweb"], id: \.self) { item in
                     ZStack {
                         Image(.inventoryBackground)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 60, height: 60)
-                        if (viewModel.inventory["leaf"] ?? 0) > 0 {
-                            
-                            Image(.leaf)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
-                        }
-                    }
-                    ZStack {
-                        Image(.inventoryBackground)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 60, height: 60)
-                        if (viewModel.inventory["stick"] ?? 0) > 0 {
-                            
-                            Image(.stick)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
-                        }
-                    }
-                    ZStack {
-                        Image(.inventoryBackground)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 60, height: 60)
+                            .frame(width: slotSize, height: slotSize)
                         
-                        if (viewModel.inventory["dandelion"] ?? 0) > 0 {
-                            Image(.dandelion)
+                        if (viewModel.inventory[item] ?? 0) > 0 {
+                            Image(ImageResource(name: item, bundle: .main))
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 50, height: 50)
-                        }
-                    }
-                    ZStack {
-                        Image(.inventoryBackground)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 60, height: 60)
-                        
-                        if (viewModel.inventory["spiderweb"] ?? 0) > 0 {
-                            Image(.spiderweb)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
+                                .frame(width: slotSize * 0.85, height: slotSize * 0.85)
                         }
                     }
                 }
             }
-            .frame(maxWidth: 500, maxHeight: 70)
+            .padding(.horizontal, screen.width * 0.012)
+            .padding(.vertical, screen.height * 0.01)
             .background(VisualEffectBlur(blurStyle: .systemMaterialDark))
             .cornerRadius(8)
             .shadow(radius: 8)
             .overlay {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.white.opacity(0.4), lineWidth: 1)
-            }
-        }
+            }        }
     }
 }
 
