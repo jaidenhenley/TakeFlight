@@ -23,7 +23,3 @@ struct HelpTextView: View {
         }
     }
 }
-
-#Preview {
-    HelpTextView(viewModel: MainGameView.ViewModel())
-}

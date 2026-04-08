@@ -13,6 +13,8 @@ struct MainGameView: View {
     let container: ModelContainer
     let newGame: Bool
     let onExit: () -> Void
+    
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @StateObject var viewModel: ViewModel
     @State private var scene = GameScene()
     
@@ -31,6 +33,7 @@ struct MainGameView: View {
     }
     
     var body: some View {
+        
         if viewModel.showGameOver {
             EndGameView(viewModel: viewModel, onExit: {
                 Self.clearSavedGame(in: container.mainContext)
@@ -42,96 +45,132 @@ struct MainGameView: View {
                 onExit()
             })
         } else {
-            ZStack(alignment: .bottomLeading) {
-                SpriteView(scene: scene)
-                    .ignoresSafeArea()
-                    .onAppear {
-                        scene.scaleMode = .resizeFill
-                        scene.viewModel = viewModel
-                    }
+            GeometryReader { geo in
+                let isLandscape = geo.size.width > geo.size.height
                 
-                if viewModel.controlsAreVisable {
-                    VStack {
-                        HStack {
-                            VStack {
-                                DrainingHungerBarView(viewModel: viewModel, currentHunger: $viewModel.hunger)
-                                    .padding([.top, .leading], 20) // use 0 if you truly want flush to safe area
-                                Spacer().frame(height: 6)
-                                BabyBarView(viewModel: viewModel, currentBabies: $viewModel.currentBabyAmount)
-                                    .padding([.top, .leading], 20) // use 0 if you truly want flush to safe area
-                                PredatorBarView(viewModel: viewModel, currentDanger: $viewModel.predatorProximitySegments)
-                                    .padding([.top, .leading], 20) // use 0 if you truly want flush to safe area
-                                
-                            }
-
-                            Spacer()
-                            
+                ZStack(alignment: .bottomLeading) {
+                    // rest of your view
+                    SpriteView(scene: scene)
+                        .ignoresSafeArea()
+                        .onAppear {
+                            scene.scaleMode = .resizeFill
+                            scene.viewModel = viewModel
                         }
-                        
-                        HStack {
-                            HelpTextView(viewModel: viewModel)
-                                .padding(20)
-                                .frame(width: 250)
-                            
-                            if let player = scene.childNode(withName: "userBird") {
-                                let x = Int(player.position.x)
-                                let y = Int(player.position.y)
-                                Text("x: \(x), y: \(y)")
-                                    .font(.system(size: 13, design: .monospaced))
-                                    .padding(6)
-                                    .background(Color.black.opacity(0.45))
-                                    .cornerRadius(6)
-                                    .foregroundColor(.green)
-                            }
-                            
-                            Spacer()
-                        }
-                        Spacer()
-                    }
-                }
-                                    
-                VStack {
-                ToolbarButtonView(viewModel: viewModel, onExit: onExit)
-                    
-                    Spacer()
-                    
                     
                     if viewModel.controlsAreVisable {
-                        HUDControls(viewModel: viewModel)
-                            .padding(60)
+                        VStack {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    if !isLandscape {
+                                        InventoryView(viewModel: viewModel)
+                                            .padding([.top, .leading], 20)
+                                            .transition(.scale.combined(with: .opacity))
+                                    }
+                                    
+                                    DrainingHungerBarView(viewModel: viewModel, currentHunger: $viewModel.hunger)
+                                        .padding([.top, .leading], 20)
+                                    Spacer().frame(height: 6)
+                                    BabyBarView(viewModel: viewModel, currentBabies: $viewModel.currentBabyAmount)
+                                        .padding([.top, .leading], 20)
+                                    PredatorBarView(viewModel: viewModel, currentDanger: $viewModel.predatorProximitySegments)
+                                        .padding([.top, .leading], 20)
+                                    
+                                }
+                                Spacer()
+                                
+                                
+                            }
+                            
+                            HStack {
+                                HelpTextView(viewModel: viewModel)
+                                    .padding(20)
+                                    .frame(width: 250)
+                                
+                                if let player = scene.childNode(withName: "userBird") {
+                                    let x = Int(player.position.x)
+                                    let y = Int(player.position.y)
+                                    Text("x: \(x), y: \(y)")
+                                        .font(.system(size: 13, design: .monospaced))
+                                        .padding(6)
+                                        .background(Color.black.opacity(0.45))
+                                        .cornerRadius(6)
+                                        .foregroundColor(.green)
+                                }
+                                
+                                Spacer()
+                            }
+                            Spacer()
+                        }
                     }
+                    
+                    VStack {
+                        HStack(alignment: .top) {
+                            Spacer()
+                            
+                            if isLandscape {
+                                InventoryView(viewModel: viewModel)
+                                    .padding(.top, 20)
+                                    .transition(.scale.combined(with: .opacity))
+                            }
+                            
+                            if viewModel.mapIsVisable {
+                                Button {
+                                    if viewModel.isMapMode == false {
+                                        viewModel.mainScene?.enterMapNode()
+                                        viewModel.mainScene?.scene?.isPaused = true
+                                    } else {
+                                        viewModel.mainScene?.exitMapMode()
+                                        viewModel.mainScene?.scene?.isPaused = false
+                                    }
+                                } label: {
+                                    Image(.compass)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 80, height: 80)
+                                        .background(Circle().fill(.black.opacity(0.7)))
+                                        .padding()
+                                }
+                                .padding()
+                            }
+                            
+                            Button { onExit() } label: {
+                                Image(.pause)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 80, height: 80)
+                                    .padding()
+                            }
+                            .padding()
+                        }
+                        
+                        Spacer()
+                        
+                        if viewModel.controlsAreVisable {
+                            HUDControls(viewModel: viewModel)
+                                .padding(60)
+                        }
+                    }
+                }
+                .animation(.spring, value: viewModel.showInventory)
+                .sheet(isPresented: $viewModel.showMiniGameSheet, onDismiss: {
+                    viewModel.startPendingMiniGame()
+                }) {
+                    MinigameOnboardingView(viewModel: viewModel)
+                        .onAppear {
+                            viewModel.controlsAreVisable = false
+                            viewModel.mapIsVisable = false
+                        }
+                        .presentationDragIndicator(.hidden)
+                }
+                .sheet(isPresented: $viewModel.showMainInstructionSheet, onDismiss: {
+                    viewModel.resumeAfterMainInstruction()
+                }) {
+                    MainOnboardingView(viewModel: viewModel, type: viewModel.pendingInstructionType!)
+                        .presentationDragIndicator(.hidden)
                 }
                 
-                if viewModel.showInventory {
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .onTapGesture {
-                            viewModel.showInventory = false
-                        }
-                    
-                    InventoryView(viewModel: viewModel)
-                        .transition(.scale.combined(with: .opacity))
-                }
+                
             }
-            .animation(.spring, value: viewModel.showInventory)
-            .sheet(isPresented: $viewModel.showMiniGameSheet, onDismiss: {
-                viewModel.startPendingMiniGame()
-            }) {
-                MinigameOnboardingView(viewModel: viewModel)
-                    .onAppear {
-                        viewModel.controlsAreVisable = false
-                        viewModel.mapIsVisable = false
-                    }
-                    .presentationDragIndicator(.hidden)
-            }
-            .sheet(isPresented: $viewModel.showMainInstructionSheet, onDismiss: {
-                viewModel.resumeAfterMainInstruction()
-            }) {
-                MainOnboardingView(viewModel: viewModel, type: viewModel.pendingInstructionType!)
-                    .presentationDragIndicator(.hidden)
-            }
-            
-            
         }
     }
     

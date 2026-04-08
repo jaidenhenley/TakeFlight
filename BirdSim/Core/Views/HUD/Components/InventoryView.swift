@@ -24,7 +24,9 @@ struct InventoryView: View {
     var body: some View {
         if viewModel.controlsAreVisable {
             let screen = UIScreen.main.bounds
-            let slotSize = screen.width * 0.045
+            let longEdge = max(screen.width, screen.height)
+            let slotSize = longEdge * 0.045
+            let wordWidth = longEdge * 0.12
             let barHeight = screen.height * 0.08
             
             
@@ -32,7 +34,7 @@ struct InventoryView: View {
                 Image(.inventoryWord)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: barHeight)
+                    .frame(width: wordWidth)
                 
                 Divider()
                     .frame(height: barHeight * 0.6)
