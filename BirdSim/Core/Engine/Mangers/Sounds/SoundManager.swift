@@ -78,7 +78,6 @@ class SoundManager {
         guard let url = foundURL else { return }
 
         do {
-            let oldPlayer = isUsingPlayerA ? musicPlayerA : musicPlayerB
             let freshlyLoadedPlayer = try AVAudioPlayer(contentsOf: url)
             freshlyLoadedPlayer.numberOfLoops = -1
             freshlyLoadedPlayer.volume = 0
