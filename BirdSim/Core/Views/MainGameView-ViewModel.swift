@@ -664,7 +664,14 @@ extension MainGameView {
                 self.gameStarted = state.gameStarted
                 self.showGameOver = state.showGameOver
                 self.showGameWin = state.showGameWin
-                self.hunger = max(0, min(5, Int(state.hunger)))
+                let savedHunger = max(0, min(5, Int(state.hunger)))
+                // If the game wasn't over, ensure the player has at least 2 hunger
+                // so they don't die immediately after resuming
+                if !state.showGameOver {
+                    self.hunger = max(savedHunger, 2)
+                } else {
+                    self.hunger = savedHunger
+                }
                 self.inventory = ["stick": state.inventoryStick, "leaf": state.inventoryLeaf, "spiderweb": state.inventorySpiderweb, "dandelion": state.inventoryDandelion]
                 self.userScore = state.userScore
                 self.hasFoundMale = state.hasFoundMale
