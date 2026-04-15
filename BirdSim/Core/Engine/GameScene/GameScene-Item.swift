@@ -64,7 +64,13 @@ extension GameScene {
         let item = SKSpriteNode(imageNamed: type)
         item.position = position
         item.name = type
-        item.setScale(0.5)
+        
+        switch type {
+        case "leaf", "stick":
+            item.setScale(0.2)
+        default:
+            item.setScale(0.5)
+        }
             
         let moveUp = SKAction.moveBy(x: 0, y: 10, duration: 0.2)
         let moveDown = SKAction.moveBy(x: 0, y: -10, duration: 0.2)

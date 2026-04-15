@@ -34,7 +34,7 @@ struct SettingsView: View {
     // Creates the settings object if the database is empty
     private func createInitialSettings() {
         if allSettings.isEmpty {
-            let newSettings = GameSettings(soundOn: true, soundVolume: 0.8, hapticsOn: true, tutorialOn: true)
+            let newSettings = GameSettings(soundOn: true, soundVolume: 0.8, hapticsOn: true, tutorialOn: true, coordinatesOn: false)
             modelContext.insert(newSettings)
         }
     }
@@ -42,8 +42,21 @@ struct SettingsView: View {
 private struct SettingsForm: View {
     @Bindable var settings: GameSettings
     var dismiss: DismissAction
+    
+    @State private var showTutorialAlert = false
 
     var body: some View {
+        
+        let tutorialBinding = Binding<Bool>(
+            get: { settings.tutorialOn }, set: { newValue in
+                if newValue {
+                    showTutorialAlert = true
+                } else {
+                    settings.tutorialOn = false
+                }
+            }
+        )
+        
         VStack(spacing: 20) {
             Text("Settings").font(.title.bold())
 
@@ -57,7 +70,11 @@ private struct SettingsForm: View {
                     }
                 }
             
-            Toggle("Tutorial", isOn: $settings.tutorialOn)
+            Toggle("Tutorial", isOn: tutorialBinding)
+            
+            Toggle("Minigame Instructions", isOn: $settings.minigameInstructionsOn)
+            
+            Toggle("Coordinates", isOn: $settings.coordinatesOn)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Volume")
@@ -68,6 +85,16 @@ private struct SettingsForm: View {
             }
 
             Button("Done") { dismiss() }
+        }
+        .alert("Reset Progress?", isPresented: $showTutorialAlert) {
+            Button("Reset & Start Tutorial", role: .destructive) {
+                settings.tutorialOn = true
+            }
+            Button("Cancel", role: .cancel) {
+                
+            }
+        } message: {
+            Text("Turning on tutorial mode will reset your current game progress. This cannot be undone.")
         }
     }
 }

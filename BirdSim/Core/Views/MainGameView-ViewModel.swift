@@ -62,14 +62,17 @@ extension MainGameView {
         
         @Published var hasShownPredatorInstruction: Bool = false
         @Published var hungerPlayed: Bool = false
+        @Published var minigameInstructionOn: Bool = true
+        @Published var coordinatesOn: Bool = false
         @Published var shownInstructionTypes: Set<InstructionType> = []
 
         // SwiftData context & model
         private var modelContext: ModelContext?
         private var gameState: GameState?
-        private var gameSettings: GameSettings?
         private var cancellables = Set<AnyCancellable>()
         private var saveWorkItem: DispatchWorkItem?
+        var gameSettings: GameSettings?
+
         
         // babybirdnestgame//
         // Add these inside class ViewModel, near your other @Published vars
@@ -159,6 +162,21 @@ extension MainGameView {
         // Present instructions while the mini-game scene is already on screen.
         // 'startAction' should unpause/start gameplay; 'cancelAction' should return to the main world.
         func showMiniGameInstructions(type: MiniGameType, startAction: @escaping () -> Void, cancelAction: @escaping () -> Void) {
+            guard minigameInstructionOn else {
+                // Instructions are off — start the minigame immediately
+                minigameStarted = true
+                controlsAreVisable = false
+                mapIsVisable = false
+                // Unfreeze the scene that was paused before this call
+                if let scene = currentMiniGameScene {
+                    scene.isPaused = false
+                    scene.isUserInteractionEnabled = true
+                    scene.speed = 1.0
+                    scene.physicsWorld.speed = 1.0
+                }
+                startAction()
+                return
+            }
             pendingMiniGameType = type
             pendingMiniGameStarter = startAction
             pendingMiniGameCanceler = cancelAction
@@ -258,7 +276,7 @@ extension MainGameView {
             case .mapView:
                 return "Keep your bearings. This view helps you track your territory and find resources."
             case .hunger:
-                return "You're hunger is low! Visit the yellow caterpiller and keep an eye on your hunger bar. Find food periodically before your energy runs out."
+                return "Your hunger is low! Visit the yellow caterpiller and keep an eye on your hunger bar. Find food periodically before your energy runs out."
             case .collectItem:
                 return "Foraging: Tap on sticks, leaves, and webs to gather materials for your nest."
             case .nestBuilding:
@@ -572,14 +590,18 @@ extension MainGameView {
             if let existingSettings = try? context.fetch(FetchDescriptor<GameSettings>()).first {
                 self.gameSettings = existingSettings
             } else {
-                let settings = GameSettings(soundOn: true, soundVolume: 0.8, hapticsOn: true, tutorialOn: true)
+                let settings = GameSettings(soundOn: true, soundVolume: 0.8, hapticsOn: true, tutorialOn: true, coordinatesOn: false)
                 context.insert(settings)
                 self.gameSettings = settings
                 try? context.save()
             }
-            // Initialize tutorial flag from persisted settings
+            // Initialize persisted settings
             if let settings = self.gameSettings {
                 self.tutorialIsOn = settings.tutorialOn
+                self.coordinatesOn = settings.coordinatesOn
+                self.minigameInstructionOn = settings.minigameInstructionsOn
+                SoundManager.shared.setMusicEnabled(settings.soundOn)
+                SoundManager.shared.setMusicVolume(Float(settings.soundVolume))
             }
 
             if let gs = gameState {
@@ -649,6 +671,22 @@ extension MainGameView {
                 }
                 .store(in: &cancellables)
             
+            $coordinatesOn
+                .sink { [weak self] newValue in
+                    guard let self else { return }
+                    self.gameSettings?.coordinatesOn = newValue
+                    do { try self.modelContext?.save() } catch { print("Failed to save settings: \(error)") }
+                }
+                .store(in: &cancellables)
+            
+            $minigameInstructionOn
+                .sink { [weak self] newValue in
+                    guard let self else { return }
+                    self.gameSettings?.minigameInstructionsOn = newValue
+                    do { try self.modelContext?.save() } catch { print("Failed to save setting: \(error)")}
+                }
+                .store(in: &cancellables)
+            
         }
 
         deinit {
@@ -664,7 +702,14 @@ extension MainGameView {
                 self.gameStarted = state.gameStarted
                 self.showGameOver = state.showGameOver
                 self.showGameWin = state.showGameWin
-                self.hunger = max(0, min(5, Int(state.hunger)))
+                let savedHunger = max(0, min(5, Int(state.hunger)))
+                // If the game wasn't over, ensure the player has at least 2 hunger
+                // so they don't die immediately after resuming
+                if !state.showGameOver {
+                    self.hunger = max(savedHunger, 2)
+                } else {
+                    self.hunger = savedHunger
+                }
                 self.inventory = ["stick": state.inventoryStick, "leaf": state.inventoryLeaf, "spiderweb": state.inventorySpiderweb, "dandelion": state.inventoryDandelion]
                 self.userScore = state.userScore
                 self.hasFoundMale = state.hasFoundMale
