@@ -276,7 +276,7 @@ extension MainGameView {
             case .mapView:
                 return "Keep your bearings. This view helps you track your territory and find resources."
             case .hunger:
-                return "You're hunger is low! Visit the yellow caterpiller and keep an eye on your hunger bar. Find food periodically before your energy runs out."
+                return "Your hunger is low! Visit the yellow caterpiller and keep an eye on your hunger bar. Find food periodically before your energy runs out."
             case .collectItem:
                 return "Foraging: Tap on sticks, leaves, and webs to gather materials for your nest."
             case .nestBuilding:
