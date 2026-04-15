@@ -62,3 +62,55 @@ Jaiden Henley | [Portfolio](https://jaidenhenley.github.io/JaidenHenleyPort/) | 
 
 George Clinkscales | [Portfolio](https://geoclink.github.io/portfolio/) | [LinkedIn](https://www.linkedin.com/in/george-clinkscales/) | [1lclink2@att.net](mailto:1lclink2@att.net)
 
+
+## Credits
+- **Music**: Menu Music
+- **Author**: mrpoly
+- **Source**: [Link to Music](https://opengameart.org/content/menu-music)
+- **License**: Licensed under Public Domain, CC0 1.0
+
+- **Music**: Car Engine Start
+- **Author**: Looney Bits
+- **Source**: [Link to Music](https://opengameart.org/content/car-engine-start-up-02)
+- **License**: Licensed under Public Domain, CC0 1.0
+
+- **Music**: Invasion
+- **Author**: el-corleo
+- **Source**: [Link to Music](https://opengameart.org/content/invasion)
+- **License**: Licensed under CC BY 3.0
+
+- **Music**: COMPLETION SOUND.
+- **Author**: Brandon Morris
+- **Source**: [Link to Music](https://opengameart.org/content/completion-sound)
+- **License**: Licensed under Public Domain, CC0 1.0
+
+- **Music**: Cyberpunk Moonlight Sonata
+- **Author**: Joth
+- **Source**: [Link to Music](https://opengameart.org/content/cyberpunk-moonlight-sonata)
+- **License**: Licensed under Public Domain, CC0 1.0
+
+- **Music**: TOWER DEFENSE THEME
+- **Author**: DST
+- **Source**: [Link to Music](https://opengameart.org/content/tower-defense-theme)
+- **License**: Licensed under Public Domain, CC0 1.0
+
+- **Music**: ONE
+- **Author**: pheonton
+- **Source**: [Link to Music](https://opengameart.org/content/one)
+- **License**: Licensed under CC BY 3.0
+
+- **Music**: CRYSTAL CAVE(SONG18)
+- **Author**: cynicmusic
+- **Source**: [Link to Music](https://opengameart.org/content/crystal-cave-song18)
+- **License**: Licensed under Public Domain, CC0 1.0
+
+
+- **Music**: APPLE BITE
+- **Author**: AntumDeluge
+- **Source**: [Link to Music](https://opengameart.org/content/apple-bite)
+- **License**: Licensed under Public Domain, CC0 1.0
+
+- **Music**: BIRD SONG(1)
+- **Author**: qubodup
+- **Source**: [Link to Music](https://opengameart.org/content/bird-song-1-second)
+- **License**: Licensed under CC BY-SA 3.0
