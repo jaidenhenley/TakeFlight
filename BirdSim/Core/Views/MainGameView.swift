@@ -86,7 +86,8 @@ struct MainGameView: View {
                                     .padding(20)
                                     .frame(width: 250)
                                 
-                                if let player = scene.childNode(withName: "userBird") {
+                                if viewModel.coordinatesOn,
+                                   let player = scene.childNode(withName: "userBird") {
                                     let x = Int(player.position.x)
                                     let y = Int(player.position.y)
                                     Text("x: \(x), y: \(y)")
@@ -96,6 +97,8 @@ struct MainGameView: View {
                                         .cornerRadius(6)
                                         .foregroundColor(.green)
                                 }
+                                
+                                
                                 
                                 Spacer()
                             }

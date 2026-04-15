@@ -62,14 +62,16 @@ extension MainGameView {
         
         @Published var hasShownPredatorInstruction: Bool = false
         @Published var hungerPlayed: Bool = false
+        @Published var coordinatesOn: Bool = false
         @Published var shownInstructionTypes: Set<InstructionType> = []
 
         // SwiftData context & model
         private var modelContext: ModelContext?
         private var gameState: GameState?
-        private var gameSettings: GameSettings?
         private var cancellables = Set<AnyCancellable>()
         private var saveWorkItem: DispatchWorkItem?
+        var gameSettings: GameSettings?
+
         
         // babybirdnestgame//
         // Add these inside class ViewModel, near your other @Published vars
@@ -572,14 +574,17 @@ extension MainGameView {
             if let existingSettings = try? context.fetch(FetchDescriptor<GameSettings>()).first {
                 self.gameSettings = existingSettings
             } else {
-                let settings = GameSettings(soundOn: true, soundVolume: 0.8, hapticsOn: true, tutorialOn: true)
+                let settings = GameSettings(soundOn: true, soundVolume: 0.8, hapticsOn: true, tutorialOn: true, coordinatesOn: false)
                 context.insert(settings)
                 self.gameSettings = settings
                 try? context.save()
             }
-            // Initialize tutorial flag from persisted settings
+            // Initialize persisted settings
             if let settings = self.gameSettings {
                 self.tutorialIsOn = settings.tutorialOn
+                self.coordinatesOn = settings.coordinatesOn
+                SoundManager.shared.setMusicEnabled(settings.soundOn)
+                SoundManager.shared.setMusicVolume(Float(settings.soundVolume))
             }
 
             if let gs = gameState {
@@ -645,6 +650,14 @@ extension MainGameView {
                 .sink { [weak self] newValue in
                     guard let self else { return }
                     self.gameSettings?.tutorialOn = newValue
+                    do { try self.modelContext?.save() } catch { print("Failed to save settings: \(error)") }
+                }
+                .store(in: &cancellables)
+            
+            $coordinatesOn
+                .sink { [weak self] newValue in
+                    guard let self else { return }
+                    self.gameSettings?.coordinatesOn = newValue
                     do { try self.modelContext?.save() } catch { print("Failed to save settings: \(error)") }
                 }
                 .store(in: &cancellables)

@@ -34,7 +34,7 @@ struct SettingsView: View {
     // Creates the settings object if the database is empty
     private func createInitialSettings() {
         if allSettings.isEmpty {
-            let newSettings = GameSettings(soundOn: true, soundVolume: 0.8, hapticsOn: true, tutorialOn: true)
+            let newSettings = GameSettings(soundOn: true, soundVolume: 0.8, hapticsOn: true, tutorialOn: true, coordinatesOn: false)
             modelContext.insert(newSettings)
         }
     }
@@ -58,6 +58,8 @@ private struct SettingsForm: View {
                 }
             
             Toggle("Tutorial", isOn: $settings.tutorialOn)
+            
+            Toggle("Coordinates", isOn: $settings.coordinatesOn)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Volume")
