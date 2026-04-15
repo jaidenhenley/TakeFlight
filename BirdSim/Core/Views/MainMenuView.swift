@@ -153,7 +153,7 @@ struct MainMenuView: View {
     @ViewBuilder
     private func menuLabel(text: String, color: Color, isSelected: Bool) -> some View {
         Text(text)
-            .foregroundStyle(.white)
+            .foregroundStyle(isSelected ? .black : .white)
             .bold()
             .font(.title2)
             .frame(width: 250, height: 50)
@@ -162,7 +162,7 @@ struct MainMenuView: View {
                     .foregroundStyle(isSelected ? Color.yellow : color)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.white, lineWidth: isSelected ? 4 : 0)
+                            .stroke(Color.white, lineWidth: isSelected ? 4 : 2)
                     )
             )
             .scaleEffect(isSelected ? 1.1 : 1.0)
