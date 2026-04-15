@@ -59,6 +59,8 @@ private struct SettingsForm: View {
             
             Toggle("Tutorial", isOn: $settings.tutorialOn)
             
+            Toggle("Minigame Instructions", isOn: $settings.minigameInstructionsOn)
+            
             Toggle("Coordinates", isOn: $settings.coordinatesOn)
 
             VStack(alignment: .leading, spacing: 8) {

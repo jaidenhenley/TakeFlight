@@ -15,13 +15,15 @@ class GameSettings {
     var hapticsOn: Bool = true
     var tutorialOn: Bool = true
     var coordinatesOn: Bool = false
+    var minigameInstructionsOn: Bool = true
     
-    init(soundOn: Bool = true, soundVolume: Double = 0.8, hapticsOn: Bool = true, tutorialOn: Bool = true, coordinatesOn: Bool = false) {
+    init(soundOn: Bool = true, soundVolume: Double = 0.8, hapticsOn: Bool = true, tutorialOn: Bool = true, coordinatesOn: Bool = false, minigameInstructionsOn: Bool = true) {
         self.soundOn = soundOn
         self.soundVolume = soundVolume
         self.hapticsOn = hapticsOn
         self.tutorialOn = tutorialOn
         self.coordinatesOn = coordinatesOn
+        self.minigameInstructionsOn = minigameInstructionsOn
     }
     
 }

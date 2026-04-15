@@ -62,6 +62,7 @@ extension MainGameView {
         
         @Published var hasShownPredatorInstruction: Bool = false
         @Published var hungerPlayed: Bool = false
+        @Published var minigameInstructionOn: Bool = true
         @Published var coordinatesOn: Bool = false
         @Published var shownInstructionTypes: Set<InstructionType> = []
 
@@ -161,6 +162,21 @@ extension MainGameView {
         // Present instructions while the mini-game scene is already on screen.
         // 'startAction' should unpause/start gameplay; 'cancelAction' should return to the main world.
         func showMiniGameInstructions(type: MiniGameType, startAction: @escaping () -> Void, cancelAction: @escaping () -> Void) {
+            guard minigameInstructionOn else {
+                // Instructions are off — start the minigame immediately
+                minigameStarted = true
+                controlsAreVisable = false
+                mapIsVisable = false
+                // Unfreeze the scene that was paused before this call
+                if let scene = currentMiniGameScene {
+                    scene.isPaused = false
+                    scene.isUserInteractionEnabled = true
+                    scene.speed = 1.0
+                    scene.physicsWorld.speed = 1.0
+                }
+                startAction()
+                return
+            }
             pendingMiniGameType = type
             pendingMiniGameStarter = startAction
             pendingMiniGameCanceler = cancelAction
@@ -583,6 +599,7 @@ extension MainGameView {
             if let settings = self.gameSettings {
                 self.tutorialIsOn = settings.tutorialOn
                 self.coordinatesOn = settings.coordinatesOn
+                self.minigameInstructionOn = settings.minigameInstructionsOn
                 SoundManager.shared.setMusicEnabled(settings.soundOn)
                 SoundManager.shared.setMusicVolume(Float(settings.soundVolume))
             }
@@ -659,6 +676,14 @@ extension MainGameView {
                     guard let self else { return }
                     self.gameSettings?.coordinatesOn = newValue
                     do { try self.modelContext?.save() } catch { print("Failed to save settings: \(error)") }
+                }
+                .store(in: &cancellables)
+            
+            $minigameInstructionOn
+                .sink { [weak self] newValue in
+                    guard let self else { return }
+                    self.gameSettings?.minigameInstructionsOn = newValue
+                    do { try self.modelContext?.save() } catch { print("Failed to save setting: \(error)")}
                 }
                 .store(in: &cancellables)
             
