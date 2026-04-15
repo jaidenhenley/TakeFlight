@@ -11,7 +11,7 @@ import SwiftData
 
 struct MainMenuView: View {
     enum MenuField: Hashable, CaseIterable {
-        case resume, start, instructions, settings, gameCenter
+        case resume, start, instructions, settings, gameCenter, credits
     }
     
     @State private var selectedIndex: Int = 0
@@ -19,6 +19,8 @@ struct MainMenuView: View {
     
     @State private var showingSettings = false
     @AppStorage("showingInstructions") var showingInstructions = true
+    
+    @State private var showingCredits = false
 
     let container: ModelContainer
     let presentingViewController: UIViewController?
@@ -112,6 +114,9 @@ struct MainMenuView: View {
         .sheet(isPresented: $showingInstructions) {
             HowToPlayView(viewModel: viewModel, onStartNewGame: onStartNewGame)
         }
+        .sheet(isPresented: $showingCredits) {
+            CreditsView()
+        }
     }
 
     private func labelTitle(for field: MenuField) -> String {
@@ -121,6 +126,7 @@ struct MainMenuView: View {
         case .instructions: return "Instructions"
         case .settings: return "Settings"
         case .gameCenter: return "Game Center"
+        case .credits: return "Credits"
         }
     }
 
@@ -147,6 +153,7 @@ struct MainMenuView: View {
                 guard let presentingViewController else { return }
                 GameKitManager.shared.showGameCenterUI(from: presentingViewController)
             }
+        case .credits: showingCredits.toggle()
         }
     }
 
@@ -162,7 +169,7 @@ struct MainMenuView: View {
                     .foregroundStyle(isSelected ? Color.yellow : color)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.white, lineWidth: isSelected ? 4 : 2)
+                            .stroke(Color.white, lineWidth: isSelected ? 4 : 0)
                     )
             )
             .scaleEffect(isSelected ? 1.1 : 1.0)
