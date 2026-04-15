@@ -9,19 +9,12 @@ import SwiftUI
 
 struct CreditsView: View {
     @Environment(\.dismiss) private var dismiss
-
+    
     private let sections: [(title: String, entries: [(role: String, name: String)])] = [
         (
             title: "Management",
             entries: [
                 (role: "Project Manager", name: "Ashlee Cunningham"),
-            ]
-        ),
-        (
-            title: "Development",
-            entries: [
-                (role: "iOS Engineer", name: "Jaiden Henley"),
-                (role: "iOS Engineer", name: "George Clinkscales Jr."),
             ]
         ),
         (
@@ -32,26 +25,23 @@ struct CreditsView: View {
             ]
         ),
         (
+            title: "Development",
+            entries: [
+                (role: "iOS Engineer", name: "George Clinkscales Jr."),
+                (role: "iOS Engineer", name: "Jaiden Henley"),
+            ]
+        ),
+
+        (
             title: "Special Thanks",
             entries: [
                 (role: "Apple Developer Academy", name: "Detroit · 2025"),
             ]
         ),
     ]
-
+    
     var body: some View {
-        VStack(spacing: 16) {
-            // Header
-            VStack(spacing: 8) {
-                Text("Credits")
-                    .font(.system(.title, design: .rounded))
-                    .bold()
-                
-                Capsule()
-                    .fill(Color.secondary.opacity(0.3))
-                    .frame(width: 40, height: 4)
-            }
-            
+        NavigationStack {
             // Credits list
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 20) {
@@ -63,7 +53,7 @@ struct CreditsView: View {
                                 .foregroundStyle(.black.opacity(0.8))
                                 .kerning(1)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-
+                            
                             ForEach(section.entries, id: \.name) { entry in
                                 HStack {
                                     Text(entry.role)
@@ -80,21 +70,11 @@ struct CreditsView: View {
                 }
                 .padding(.bottom, 4)
             }
-            
-            // Action Button
-            Button {
-                dismiss()
-            } label: {
-                Text("Done")
-                    .font(.system(.headline, design: .rounded))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.green)
-            .keyboardShortcut(.space, modifiers: [])
+            .navigationTitle("Credits")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .padding(30)
-        .presentationDragIndicator(.hidden)
+        .presentationDetents([.medium])
+
     }
 }
