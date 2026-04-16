@@ -2,7 +2,7 @@
 
 5-in-1 high-score survival game set on Belle Isle. You rotate through mini-games that test memory, coordination, speed, and reflexes while managing hunger, building nests, finding a mate, raising babies, and pushing for higher scores.
 
-[Try on TestFlight](https://testflight.apple.com/join/vwcyPcTW)
+[View on the App Store](https://apps.apple.com/us/app/takeflight-a-bird-life/id6758803964)
 
 ## Stack
 
