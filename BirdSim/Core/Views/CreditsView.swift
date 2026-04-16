@@ -20,7 +20,7 @@ struct CreditsView: View {
         (
             title: "Design",
             entries: [
-                (role: "UI / UX Design", name: "Dorrien Harris"),
+                (role: "UI / UX Design", name: "Dorien Harris"),
                 (role: "UI / UX Design", name: "Zoe Talley"),
             ]
         ),
@@ -50,7 +50,7 @@ struct CreditsView: View {
                             Text(section.title.uppercased())
                                 .font(.system(.caption, design: .rounded))
                                 .bold()
-                                .foregroundStyle(.black.opacity(0.8))
+                                .foregroundStyle(.secondary)
                                 .kerning(1)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             
@@ -58,7 +58,7 @@ struct CreditsView: View {
                                 HStack {
                                     Text(entry.role)
                                         .font(.system(.body, design: .rounded))
-                                        .foregroundStyle(.black.opacity(0.8))
+                                        .foregroundStyle(.secondary)
                                     Spacer()
                                     Text(entry.name)
                                         .font(.system(.body, design: .rounded))
